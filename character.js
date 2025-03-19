@@ -1,9 +1,32 @@
 document.addEventListener("DOMContentLoaded",async() =>{
     const allCharacters = document.getElementById("all_character");
-
+    const speciesFilter = document.getElementById("species_list");
 
     try{
         const characterList = await fetchAllCharacters();
+
+        // Get all species and add to filter menu
+        const allSpecies = new Set();
+        for(const character of characterList){
+            const speciesName = await fetchSpecies(character.species);
+            allSpecies.add(speciesName);
+        }
+        // Update filter-dropdown
+        allSpecies.forEach(species => {
+            const option = document.createElement("option");
+            option.value =  species;
+            option.textContent = species;
+            speciesFilter.appendChild(option);
+        });
+
+        // after filter change
+        speciesFilter.addEventListener("change",() =>{
+            const selectedSpecies = speciesFilter.value;
+            const filteredCharacters = selectedSpecies == "all" ? characterList
+            : characterList.filter(char =>char.speciesName === selectedSpecies);
+            renderCharacters(filteredCharacters,allCharacters);
+        });
+
 
         renderCharacters(characterList, allCharacters);
     }catch(error){
@@ -62,6 +85,9 @@ async function renderCharacters (characterList, container) {
             fetchFilmTitles(character.films),
 
         ]);
+
+        //Save species directly in the object for filtering later
+        character.speciesName = speciesName;
 
         // create elements for character card details
     const characterName = document.createElement("h2");
