@@ -87,7 +87,7 @@ async function renderCharacters (characterList, container) {
         ]);
 
         //Save species directly in the object for filtering later
-        character.speciesName = speciesName;
+       character.speciesName = speciesName;
 
         // create elements for character card details
     const characterName = document.createElement("h2");
@@ -103,12 +103,37 @@ async function renderCharacters (characterList, container) {
     characterFilms.innerHTML= `<strong> Films : <strong> ${filmTitle.join(",")}`;
 
 
+    // create edit button
+    const editButton = document.createElement("button");
+    editButton.innerHTML = `<i class="fa-solid fa-pen"></i>`;
+    editButton.classList.add("edit-btn");
+    editButton.addEventListener("click", () =>{
+        const newName = prompt("Enter new name: ", character.name);
+        const newBirthYear = prompt("Enter new birth year: ", character.birth_year);
+        const newSpecies = prompt("Enter new species: ", speciesName);
+        if (newName) characterName.innerHTML = newName;
+        if(newBirthYear) characterBirthYear.innerHTML = `<strong> Birth Year : <strong> ${newBirthYear}`;
+        if(newSpecies) characterSpecies.innerHTML = `<strong> Species : <strong> ${newSpecies}`;
+    });
+
+
+    //Create delete button
+
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+    deleteButton.classList.add("delete-btn");
+    deleteButton.addEventListener("click",() => {
+        characterDiv.remove();
+    });
+
+
     characterDiv.appendChild(characterName);
     characterDiv.appendChild(characterSpecies);
     characterDiv.appendChild(characterBirthYear);
     characterDiv.appendChild(characterFilms);
     container.appendChild(characterDiv);
-
+    characterDiv.appendChild(editButton);
+    characterDiv.appendChild(deleteButton);
 
 
     }
