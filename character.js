@@ -72,6 +72,24 @@ async function fetchSpecies(speciesUrls) {
     
 }
 
+// background Color based on Species
+const setSpecicesColor ={
+    "Unknown" : "#ffffff",
+    "Human": "#FF5733",
+    "Wookie":"#3357FF",
+    "Droid":"#33FF57",
+    "Twi'lek": "#2980B9"
+};
+function getRandomColor(){
+    return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+}
+function speciesBackgroundColor(species){
+    if(!setSpecicesColor[species]){
+        setSpecicesColor[species] = getRandomColor();
+    }
+    return setSpecicesColor[species];
+}
+
 //Render Character Cards
 async function renderCharacters (characterList, container) {
     container.innerHTML ="";
@@ -125,6 +143,9 @@ async function renderCharacters (characterList, container) {
     deleteButton.addEventListener("click",() => {
         characterDiv.remove();
     });
+
+    // background Color
+    characterDiv.style.backgroundColor = speciesBackgroundColor(speciesName);
 
 
     characterDiv.appendChild(characterName);

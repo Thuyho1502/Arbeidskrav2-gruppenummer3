@@ -26,6 +26,10 @@ h1{
     border-radius: 8px;
     text-align: left;
     background-color: beige;
+    border: 1px solid black;
+    
+    
+
 }
 .edit-btn{
     background: none;
