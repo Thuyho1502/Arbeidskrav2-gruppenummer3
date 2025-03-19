@@ -27,6 +27,28 @@ async function fetchAllCharacters() {
     
 }
 
+//Fetch Film Title
+async function fetchFilmTitles(filmUrls) {
+    
+    const filmTitle = await Promise.all(
+        filmUrls.map(async(filmUrl) =>{
+            const filmResponse = await fetch(filmUrl);
+            const filmData = await filmResponse.json();
+            return filmData.title;
+        })
+        
+    );
+    return filmTitle;
+    
+}
+async function fetchSpecies(speciesUrls) {
+    if(speciesUrls.length ===0) return "Unknown";
+    const speciesResponse = await fetch(speciesUrls[0]);
+    const speciesData = await speciesResponse.json();
+    return speciesData.name;
+    
+}
+
 //Render Character Cards
 async function renderCharacters (characterList, container) {
     container.innerHTML ="";
@@ -34,18 +56,25 @@ async function renderCharacters (characterList, container) {
         const characterDiv = document.createElement("div");
         characterDiv.classList.add("character_card");
 
+        //Fetch addition details
+        const[speciesName, filmTitle] = await Promise.all([
+            fetchSpecies(character.species),
+            fetchFilmTitles(character.films),
+
+        ]);
+
         // create elements for character card details
     const characterName = document.createElement("h2");
     characterName.textContent = character.name;
 
     const characterSpecies = document.createElement("p");
-    characterSpecies.innerHTML =`<strong> Species : <strong> ${character.speciesName}`;
+    characterSpecies.innerHTML =`<strong> Species : <strong> ${speciesName}`;
 
     const characterBirthYear = document.createElement("p");
     characterBirthYear.innerHTML =`<strong> Birth Year : <strong> ${character.birth_year}`;
 
     const characterFilms = document.createElement("p");
-    characterFilms.innerHTML= `<strong> Films : <strong> ${character.films}`;
+    characterFilms.innerHTML= `<strong> Films : <strong> ${filmTitle.join(",")}`;
 
 
     characterDiv.appendChild(characterName);
