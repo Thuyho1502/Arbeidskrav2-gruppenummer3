@@ -1,17 +1,29 @@
 document.addEventListener("DOMContentLoaded",async() =>{
     const allCharacters = document.getElementById("all_character");
     const speciesFilter = document.getElementById("species_list");
+    const addForm = document.getElementById("add_form");
 
     try{
-        const characterList = await fetchAllCharacters();
+        let characterList = await fetchAllCharacters();
+        const storeCharacters = fetchCharacterFromLocalStorage();
+        characterList = [...characterList, ...storeCharacters];
+
+        console.log("Fetched characters:", characterList)
+
 
         // Get all species and add to filter menu
         const allSpecies = new Set();
         for(const character of characterList){
-            const speciesName = await fetchSpecies(character.species);
-            allSpecies.add(speciesName);
+            if(!character.speciesName){
+                character.speciesName = character.species.length > 0
+                    ? await fetchSpecies(character.species)
+                    :"Unknown"
+            }
+            allSpecies.add(character.speciesName);
         }
+
         // Update filter-dropdown
+        speciesFilter.innerHTML ='<option value ="all">All</option>';
         allSpecies.forEach(species => {
             const option = document.createElement("option");
             option.value =  species;
@@ -29,6 +41,33 @@ document.addEventListener("DOMContentLoaded",async() =>{
 
 
         renderCharacters(characterList, allCharacters);
+        addForm.addEventListener("submit",(e)=>{
+            e.preventDefault();
+            const heroname = document.getElementById("name").value.trim();
+            const yearOfBirth = document.getElementById("birth_year").value;
+            const species = document.getElementById("species").value;
+
+            if (!heroname || !yearOfBirth || !species){
+                alert ("PLease Input all data");
+                return;
+            }
+            if(isNaN(yearOfBirth)){
+                alert("Birth Year must be number");
+                return;
+            }
+            const newCharacter ={
+                name : heroname,
+                birth_year : yearOfBirth,
+                speciesName : species,
+                films :[]
+            };
+
+            storeCharacterToLocalStorage(newCharacter);
+            characterList.push(newCharacter);
+            renderCharacters(characterList,allCharacters);
+
+            addForm.reset();
+        })
     }catch(error){
         console.error("Error fetching Start Wars character:", error);
     }
@@ -49,6 +88,16 @@ async function fetchAllCharacters() {
     return characterList;
     
 }
+function storeCharacterToLocalStorage(character){
+    let storeCharacters = JSON.parse(localStorage.getItem("characters")) || [];
+    storeCharacters.push(character);
+    localStorage.setItem("characters", JSON.stringify(storeCharacters));
+}
+
+function fetchCharacterFromLocalStorage(){
+    return JSON.parse(localStorage.getItem("characters")) || [];
+}
+
 
 //Fetch Film Title
 async function fetchFilmTitles(filmUrls) {
@@ -65,10 +114,23 @@ async function fetchFilmTitles(filmUrls) {
     
 }
 async function fetchSpecies(speciesUrls) {
-    if(!speciesUrls || speciesUrls.length ===0) return "Unknown";
-    const speciesResponse = await fetch(speciesUrls[0]);
-    const speciesData = await speciesResponse.json();
-    return speciesData.name;
+
+    if(!speciesUrls || !Array.isArray(speciesUrls) || speciesUrls.length === 0){
+        return "Unknown";
+    }
+
+    try{
+        const speciesRsponse = await fetch (speciesUrls[0]);
+        if (!speciesRsponse.ok){
+            throw new Error(`Failed : ${speciesUrls[0]}`);
+        }
+        const speciesData = await speciesRsponse.json();
+        return speciesData.name;
+    }catch (error) {
+        console.error("Error fetching species:",error);
+        return "Unknown"
+    }
+
     
 }
 
@@ -99,11 +161,14 @@ async function renderCharacters (characterList, container) {
         characterDiv.classList.add("character_card");
 
         //Fetch addition details
-        const[speciesName, filmTitle] = await Promise.all([
+        /* const[speciesName, filmTitle] = await Promise.all([
             fetchSpecies(character.species),
             fetchFilmTitles(character.films),
 
-        ]);
+        ]); */
+
+        const speciesName = character.speciesName || "Unknown";
+        const filmTitle =character.films ? await fetchFilmTitles(character.films):["Unknown"];
 
         //Save species directly in the object for filtering later
        character.speciesName = speciesName;
@@ -119,7 +184,11 @@ async function renderCharacters (characterList, container) {
     characterBirthYear.innerHTML =`<strong> Birth Year : <strong> ${character.birth_year}`;
 
     const characterFilms = document.createElement("p");
-    characterFilms.innerHTML= `<strong> Films : <strong> ${filmTitle.join(",")}`;
+    if (filmTitle.length > 0){
+        characterFilms.innerHTML= `<strong> Films : <strong> ${filmTitle.join(",")}`;
+    } else{
+        characterFilms.style.display ="none"
+    }
 
 
     // create edit button
