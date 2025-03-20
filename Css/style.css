@@ -53,4 +53,38 @@ h1{
     color: darkred;
     font-size: 20px;
 }
+#add_form{
+    display: flex;
+    flex-wrap: wrap;
+    gap:8px;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;
+    max-width: 920px;
+}
 
+#add_form input,
+#add_form select,
+#add_form button{
+    padding: 15px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 2px solid #000000;
+}
+#add_form input,
+#add_form select{
+    flex:2;
+    min-width: 160px;
+}
+
+#add_form button{
+    background-color: #38cd3d;
+    color: #ffffff;
+    cursor: pointer;
+    flex: 2;
+    min-width: 160px;
+    text-align: center;    
+}
+#add_form button:hover{
+    background-color: #25db2e;
+}
