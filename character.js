@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded",async() =>{
         // after filter change
         speciesFilter.addEventListener("change",() =>{
             const selectedSpecies = speciesFilter.value;
-            const filteredCharacters = selectedSpecies == "all" ? characterList
+            const filteredCharacters = selectedSpecies === "all" ? characterList
             : characterList.filter(char =>char.speciesName === selectedSpecies);
             renderCharacters(filteredCharacters,allCharacters);
         });
@@ -39,12 +39,12 @@ document.addEventListener("DOMContentLoaded",async() =>{
 
 async function fetchAllCharacters() {
     let characterList =[];
-    let netxCharacterUrl = "https://swapi.dev/api/people"; 
-    while(netxCharacterUrl){
-        const characterResponse = await fetch (netxCharacterUrl);
+    let nextCharacterUrl = "https://swapi.dev/api/people"; 
+    while(nextCharacterUrl){
+        const characterResponse = await fetch (nextCharacterUrl);
         const characterData = await characterResponse.json();
         characterList = characterList.concat(characterData.results);
-        netxCharacterUrl = characterData.next;  // get next page Url
+        nextCharacterUrl = characterData.next;  // get next page Url
     }
     return characterList;
     
@@ -65,7 +65,7 @@ async function fetchFilmTitles(filmUrls) {
     
 }
 async function fetchSpecies(speciesUrls) {
-    if(speciesUrls.length ===0) return "Unknown";
+    if(!speciesUrls || speciesUrls.length ===0) return "Unknown";
     const speciesResponse = await fetch(speciesUrls[0]);
     const speciesData = await speciesResponse.json();
     return speciesData.name;
@@ -92,6 +92,7 @@ function speciesBackgroundColor(species){
 
 //Render Character Cards
 async function renderCharacters (characterList, container) {
+    
     container.innerHTML ="";
     for(const character of characterList) {
         const characterDiv = document.createElement("div");
@@ -109,7 +110,7 @@ async function renderCharacters (characterList, container) {
 
         // create elements for character card details
     const characterName = document.createElement("h2");
-    characterName.textContent = character.name;
+    characterName.innerHTML = character.name;
 
     const characterSpecies = document.createElement("p");
     characterSpecies.innerHTML =`<strong> Species : <strong> ${speciesName}`;
@@ -132,6 +133,7 @@ async function renderCharacters (characterList, container) {
         if (newName) characterName.innerHTML = newName;
         if(newBirthYear) characterBirthYear.innerHTML = `<strong> Birth Year : <strong> ${newBirthYear}`;
         if(newSpecies) characterSpecies.innerHTML = `<strong> Species : <strong> ${newSpecies}`;
+        characterDiv.style.backgroundColor = speciesBackgroundColor(newSpecies);
     });
 
 
