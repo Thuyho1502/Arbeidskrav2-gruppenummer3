@@ -1,3 +1,5 @@
+import { addCharacter } from "./request/Post.js";
+
 const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
 const speciesSelect = document.getElementById("species");
@@ -188,7 +190,6 @@ addBtn.addEventListener("click",createCharacter);
 const characterList = []; 
 function createCharacter(){
     try{
-        //const allCharacters = document.getElementById("all_character");
         const inputCharacterName = document.getElementById("name").value.trim();
         const inputYearOfBirth = document.getElementById("birth_year").value;
         const inputspecies = speciesSelect.value;
@@ -205,11 +206,9 @@ function createCharacter(){
         characterList.push(newCharacterObject);
        
         localStorage.setItem("characters",JSON.stringify(characterList));
-        showCharacters();
-        
+        showCharacters();    
 
-
-    
+        addCharacter([newCharacterObject]);   
   
     }catch(error)
         {
