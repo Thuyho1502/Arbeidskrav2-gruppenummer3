@@ -1,5 +1,5 @@
 
-
+import { getCharacters } from "./requests/GET.js";
 const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
 
@@ -8,7 +8,6 @@ const birthyearEnter=document.getElementById("birthyear-enter");
 const speciesSelect=document.getElementById("species-select");
 const addCharacterBtn=document.getElementById("add-btn");
 
-const customCharacters =[];
 
 
 async function fetchAllCharacters(){
@@ -21,6 +20,23 @@ async function fetchAllCharacters(){
         url=data.next;
     }
     return characters;
+}
+
+async function fetchCRUDCharacters(){
+    try{
+        const data = await getCharacters();
+        return data.items || [];
+    }catch (error){
+        console.error("Failed to fetch CRUD data : ", error);
+        return [];
+    }
+}
+
+async function fetchCharacters(){
+    const swapi = await fetchAllCharacters();
+    const crud = await fetchCRUDCharacters();
+    return swapi.concat(crud);
+
 }
 
 
@@ -79,8 +95,8 @@ function getColorForSpecies(species){
 async function showCharacters(typesSpecies = null){
     charactersList.innerHTML ="";
     //
-    const apiCharacters = await fetchAllCharacters();
-    const characters=apiCharacters.concat(customCharacters);
+    const apiCharacters = await fetchCharacters();
+    const characters=apiCharacters;
     //<const characters = await fetchCharacters();
 
     for (const character of characters){
@@ -144,7 +160,7 @@ async function showCharacters(typesSpecies = null){
 }
 
 async function addSpeciesBtn(){
-    const characters = await fetchAllCharacters();
+    const characters = await fetchCharacters();
     const speciesGroup = new Set();
 
     for (const character of characters){
@@ -194,7 +210,6 @@ addCharacterBtn.addEventListener("click", function(){
         films : [],
         custom : true
     };
-    customCharacters.push(newCharacter);
     showCharacters();
 
     nameEnter.value="",
