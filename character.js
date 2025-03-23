@@ -1,42 +1,22 @@
+import { addCharacter } from "./request/Post.js";
 
-import { getCharacters } from "./requests/GET.js";
 const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
-
-const nameEnter=document.getElementById("name-enter");
-const birthyearEnter=document.getElementById("birthyear-enter");
-const speciesSelect=document.getElementById("species-select");
-const addCharacterBtn=document.getElementById("add-btn");
+const speciesSelect = document.getElementById("species");
 
 
-
-async function fetchAllCharacters(){
-    let characters=[];
+async function fetchAllCharacter(){
+    
     let url="https://swapi.dev/api/people/";
+    let characters=[];
     while(url){
-        const response = await fetch(url);
+        
+        const response =await fetch(url);
         const data = await response.json();
-        characters = characters.concat(data.results);
+        characters=characters.concat(data.results);
         url=data.next;
     }
     return characters;
-}
-
-async function fetchCRUDCharacters(){
-    try{
-        const data = await getCharacters();
-        return data.items || [];
-    }catch (error){
-        console.error("Failed to fetch CRUD data : ", error);
-        return [];
-    }
-}
-
-async function fetchCharacters(){
-    const swapi = await fetchAllCharacters();
-    const crud = await fetchCRUDCharacters();
-    return swapi.concat(crud);
-
 }
 
 
@@ -46,7 +26,7 @@ async function fetchSpecies(speciesUrl){
     }
     
     const url = speciesUrl[0];
-    if (typeof url === "string" && !url.startsWith("https://swapi.dev")){
+    if (typeof url === "string" && !url.startsWith("https://swapi.dev/api/species")){
         return url;
     }
     try{
@@ -71,13 +51,14 @@ async function fetchFilm(filmUrls){
     return filmstitle;
 }
 
+
 const setSpeciesColor ={
-        "Human":"green",
-        "Droid":"purple",
-        "Wookiee":"red",
-        "Rodian":"pink",
-        "Hutt":"blue",
-        "Unknown":"white"
+    "Human":"green",
+    "Droid":"purple",
+    "Wookiee":"red",
+    "Rodian":"pink",
+    "Hutt":"blue",
+    "Unknown":"white"
 };
 
 function getRandomColor(){
@@ -88,27 +69,27 @@ function getColorForSpecies(species){
     if(!setSpeciesColor[species]){
         setSpeciesColor[species]=getRandomColor();
     }
-    return setSpeciesColor[species];
-    
-}
+    return setSpeciesColor[species];   
+};
 
 async function showCharacters(typesSpecies = null){
-    charactersList.innerHTML ="";
+    try {
+        charactersList.innerHTML ="";
     //
-    const apiCharacters = await fetchCharacters();
-    const characters=apiCharacters;
+    const apiCharacters = await fetchAllCharacter();
+    const characters=apiCharacters(characterList);
     //<const characters = await fetchCharacters();
 
     for (const character of characters){
-        const speciesName = character.species.length > 0
+        const speciesName = (character.species&&Array.isArray(character.species)&&character.species.length > 0)
         ? await fetchSpecies(character.species)
-        :"Unknown";
+        :character.speciesName || "Unknown";
 
         if (typesSpecies && speciesName !== typesSpecies){
             continue;
         }
 
-        const titles = character.films.length > 0
+        const titles = character.films
         ? await fetchFilm(character.films)
         : [] ; 
 
@@ -152,19 +133,23 @@ async function showCharacters(typesSpecies = null){
                 characterSpecies.innerText="Species:" + newSpecies;
                 card.style.backgroundColor=getColorForSpecies(newSpecies)
             }
-        })
+        });
         card.append(characterName, characterBirthYear, characterSpecies,characterFilms,deleteBtn,editBtn);
         charactersList.appendChild(card);
     }
     console.log(" Character Cards : ", charactersList.children.length);
+    }catch (error){
+    console.log("Can not loaded character",error)
+    }
+    
 }
 
 async function addSpeciesBtn(){
-    const characters = await fetchCharacters();
+    const characters = await fetchAllCharacter();
     const speciesGroup = new Set();
 
     for (const character of characters){
-        const speciesName = character.species.length > 0
+        const speciesName = (character.species && character.species.length > 0)
         ? await fetchSpecies (character.species)
         :"Unknown";
         speciesGroup.add(speciesName);
@@ -194,28 +179,38 @@ async function addSpeciesBtn(){
     speciesType.appendChild(restartBtn);
 
 }
-addCharacterBtn.addEventListener("click", function(){
-    const name = nameEnter.value.trim();
-    const birthYear=birthyearEnter.value.trim();
-    const species =speciesSelect.value;
 
-    if (!name || !birthYear || !species){
-        alert("Pls Enter all information.");
-        return
-    }
-    const newCharacter={
-        name : name,
-        birth_year : birthYear,
-        species : [species],
-        films : [],
-        custom : true
-    };
-    showCharacters();
+const addBtn = document.getElementById("add-btn");
+addBtn.addEventListener("click",createCharacter);
+const characterList = []; 
+function createCharacter(){
+    try{
+        const inputCharacterName = document.getElementById("name").value.trim();
+        const inputYearOfBirth = document.getElementById("birth_year").value;
+        const inputspecies = speciesSelect.value;
+        if (!inputCharacterName || !inputYearOfBirth || !inputspecies || inputspecies === "all"){
+            alert ("PLease Input all data");
+            return;
+        }   
+        const newCharacterObject  = {
+            name : inputCharacterName,
+            birth_year : inputYearOfBirth,
+            speciesName : [inputspecies]
+        };
+        console.log("New character:", newCharacterObject);
+        characterList.push(newCharacterObject);
+       
+        localStorage.setItem("characters",JSON.stringify(characterList));
+        showCharacters();    
 
-    nameEnter.value="",
-    birthyearEnter.value ="",
-    speciesSelect.value=0;
-});
+        addCharacter([newCharacterObject]);   
+  
+    }catch(error)
+        {
+            console.log("Can not create new character:", error);
+        }
+        
+}
 
 addSpeciesBtn();
 showCharacters();
