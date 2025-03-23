@@ -4,29 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Star Wars-universet character</title>
-    <link rel="stylesheet" href="Css/style.css"> 
+    <link rel="stylesheet" href="Css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
 </head>
 <body>
     <header>
         <h1>Star Wars Universet</h1>
     </header>
+    
+    <form id = "add_form">
+        <input type = "text" id ="name" placeholder="Character Name" required>
+        <input type ="text" id="birth_year" placeholder="Year Of Birth" required>
+        <section>
+            <label for ="species"></label>
+            <select id ="species">
+                <option value="all">Species</option>
+            </select>
+        </section>
+        
+        <button type="button" id="add-btn" value="Add">Add</button>
+    </form>
 
-<form id = "add_form">
-    <input type = "text" id ="name" placeholder="Hero Name" required>
-    <input type ="text" id="birth_year" placeholder="Year Of Birth" required>
-    <input type ="text" id ="species" placeholder=" Enter Species" required>
-    <button type ="submit">Add</button>
-</form>
-    <section>
-        <label for ="species_list">Type by Species</label>
-        <select id ="species_list">
-            <option value="all">All</option>
-        </select>
-    </section>
-    <section id="all_character"></section>
-    
+    <div id ="species-type"></div>
+    <div id ="characters-list"></div>
+
     <script src="character.js"></script>
-    
 </body>
 </html>

@@ -3,88 +3,92 @@ body{
     background-color: white;
     text-align: center;
 }
-header{
-    background-color: black;
-    color: white;
-    padding: 5px;
-    font-size: 17px;
-}
+
+
 h1{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    font-size: 25px;
+    margin-top: 15px;
 }
-#all_character{
+
+#species-type{
+    margin:10px 0;
+}
+
+button{
+    padding:  10px 12px;
+    margin : 8px;
+    border:none;
+    cursor: pointer;
+    background-color: #2f84de;
+    color: white;
+    border-radius: 8px;
+}
+
+button:hover{
+    background-color: #0452a5;
+}
+
+#characters-list{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    margin: 20px;
-}
-.character_card{
-    width: 200px;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: left;
-    background-color: beige;
-    border: 1px solid black;
-    
-    
-
-}
-.edit-btn{
-    background: none;
-    border: none;
-    color: blue;
-    font-size: 15px;
-    cursor: pointer;
-}
-.edit-btn:hover {
-    color: darkblue;
-    font-size: 20px;
-}
-.delete-btn{
-    background: none;
-    border: none;
-    color: red;
-    font-size: 15px;
-    cursor: pointer;
-}
-.delete-btn :hover{
-    color: darkred;
-    font-size: 20px;
-}
-#add_form{
-    display: flex;
-    flex-wrap: wrap;
-    gap:8px;
-    align-items: center;
-    justify-content: center;
-    margin: 15px auto;
-    max-width: 920px;
-}
-
-#add_form input,
-#add_form select,
-#add_form button{
     padding: 15px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 2px solid #000000;
-}
-#add_form input,
-#add_form select{
-    flex:2;
-    min-width: 160px;
 }
 
-#add_form button{
-    background-color: #38cd3d;
-    color: #ffffff;
-    cursor: pointer;
-    flex: 2;
-    min-width: 160px;
-    text-align: center;    
+.character-card{
+    width: 200px;
+    padding: 20px;
+    border-radius: 5px;
+    
+    text-align: left;
+    border: 1px solid black;
 }
-#add_form button:hover{
-    background-color: #25db2e;
+
+.character-card h2{
+    margin: 7px 0;
+    font-size: 20px;
 }
+
+.character-card p{
+    margin: 7px 0 ;
+    font-size: 15px;
+}
+
+.character-card button{
+    width: 40%;
+    margin-top: 15px;
+}
+
+.character-card .delete-btn{
+    background-color: red;
+}
+
+.character-card .delete-btn:hover{
+    background-color: #dad428;
+}
+
+.character-card .edit-btn{
+    background-color: green ;
+}
+
+.character-card .edit-btn:hover{
+    background-color: #097825;
+}
+
+#species-select{
+    padding : 10px;
+    margin-top: 10px;
+    font-size: 15px;
+    border-radius: 7px;
+    background-color: white;
+    color: black;
+    border: 1px seagreen;
+}
+
+#species-select option{
+    background-color: white;
+    color: black;
+    padding: 7px;
+}
+
