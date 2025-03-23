@@ -1,4 +1,5 @@
 import { addCharacter } from "./request/Post.js";
+import { deleteCharacter } from "./request/Delete.js";
 
 const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
@@ -112,10 +113,10 @@ function getColorForSpecies(species){
 
 
         const deleteBtn = document.createElement("button");
-        deleteBtn.innerHTML=`<i class="fa-solid fa-trash"></i>`;
+        deleteBtn.innerText="Delete";
         deleteBtn.classList.add("delete-btn");
         deleteBtn.addEventListener("click", function(){
-            card.remove();
+            deleteCharacters(character._uuid);
 
     
         });
@@ -146,6 +147,14 @@ function getColorForSpecies(species){
     } catch (error) {
         console.log("Can not loaded characet", error)
     }
+    
+}async function deleteCharacters(id) {
+    await deleteCharacter(id);
+    let storedCharacters = JSON.parse(localStorage.getItem("characters")) || [];
+
+    storedCharacters = storedCharacters.filter(character => character._uuid !== id);
+    localStorage.removeItem("characters", JSON.stringify(storedCharacters));
+    showCharacters();
     
 }
 
