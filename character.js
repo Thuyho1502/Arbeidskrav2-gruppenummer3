@@ -1,230 +1,213 @@
-document.addEventListener("DOMContentLoaded",async() =>{
-    const allCharacters = document.getElementById("all_character");
-    const speciesFilter = document.getElementById("species_list");
-    const addForm = document.getElementById("add_form");
-
-    try{
-        let characterList = await fetchAllCharacters();
-        const storeCharacters = fetchCharacterFromLocalStorage();
-        characterList = [...characterList, ...storeCharacters];
-
-        console.log("Fetched characters:", characterList)
 
 
-        // Get all species and add to filter menu
-        const allSpecies = new Set();
-        for(const character of characterList){
-            if(!character.speciesName){
-                character.speciesName = character.species.length > 0
-                    ? await fetchSpecies(character.species)
-                    :"Unknown"
-            }
-            allSpecies.add(character.speciesName);
-        }
+const speciesType = document.getElementById("species-type");
+const charactersList = document.getElementById("characters-list");
 
-        // Update filter-dropdown
-        speciesFilter.innerHTML ='<option value ="all">All</option>';
-        allSpecies.forEach(species => {
-            const option = document.createElement("option");
-            option.value =  species;
-            option.textContent = species;
-            speciesFilter.appendChild(option);
-        });
+const nameEnter=document.getElementById("name-enter");
+const birthyearEnter=document.getElementById("birthyear-enter");
+const speciesSelect=document.getElementById("species-select");
+const addCharacterBtn=document.getElementById("add-btn");
 
-        // after filter change
-        speciesFilter.addEventListener("change",() =>{
-            const selectedSpecies = speciesFilter.value;
-            const filteredCharacters = selectedSpecies == "all" ? characterList
-            : characterList.filter(char =>char.speciesName === selectedSpecies);
-            renderCharacters(filteredCharacters,allCharacters);
-        });
+const customCharacters =[];
 
 
-        renderCharacters(characterList, allCharacters);
-        addForm.addEventListener("submit",(e)=>{
-            e.preventDefault();
-            const heroname = document.getElementById("name").value.trim();
-            const yearOfBirth = document.getElementById("birth_year").value;
-            const species = document.getElementById("species").value;
-
-            if (!heroname || !yearOfBirth || !species){
-                alert ("PLease Input all data");
-                return;
-            }
-            if(isNaN(yearOfBirth)){
-                alert("Birth Year must be number");
-                return;
-            }
-            const newCharacter ={
-                name : heroname,
-                birth_year : yearOfBirth,
-                speciesName : species,
-                films :[]
-            };
-
-            storeCharacterToLocalStorage(newCharacter);
-            characterList.push(newCharacter);
-            renderCharacters(characterList,allCharacters);
-
-            addForm.reset();
-        })
-    }catch(error){
-        console.error("Error fetching Start Wars character:", error);
+async function fetchAllCharacters(){
+    let characters=[];
+    let url="https://swapi.dev/api/people/";
+    while(url){
+        const response = await fetch(url);
+        const data = await response.json();
+        characters = characters.concat(data.results);
+        url=data.next;
     }
-    
-});
-
-// Fetch all character follow API: https://swapi.dev/ 
-
-async function fetchAllCharacters() {
-    let characterList =[];
-    let netxCharacterUrl = "https://swapi.dev/api/people"; 
-    while(netxCharacterUrl){
-        const characterResponse = await fetch (netxCharacterUrl);
-        const characterData = await characterResponse.json();
-        characterList = characterList.concat(characterData.results);
-        netxCharacterUrl = characterData.next;  // get next page Url
-    }
-    return characterList;
-    
-}
-function storeCharacterToLocalStorage(character){
-    let storeCharacters = JSON.parse(localStorage.getItem("characters")) || [];
-    storeCharacters.push(character);
-    localStorage.setItem("characters", JSON.stringify(storeCharacters));
-}
-
-function fetchCharacterFromLocalStorage(){
-    return JSON.parse(localStorage.getItem("characters")) || [];
+    return characters;
 }
 
 
-//Fetch Film Title
-async function fetchFilmTitles(filmUrls) {
-    
-    const filmTitle = await Promise.all(
-        filmUrls.map(async(filmUrl) =>{
-            const filmResponse = await fetch(filmUrl);
-            const filmData = await filmResponse.json();
-            return filmData.title;
-        })
-        
-    );
-    return filmTitle;
-    
-}
-async function fetchSpecies(speciesUrls) {
-    if(!speciesUrls || !Array.isArray(speciesUrls) || speciesUrls.length === 0){
+async function fetchSpecies(speciesUrl){
+    if(!Array.isArray(speciesUrl) || speciesUrl.length === 0){
         return "Unknown";
     }
-
+    
+    const url = speciesUrl[0];
+    if (typeof url === "string" && !url.startsWith("https://swapi.dev")){
+        return url;
+    }
     try{
-        const speciesRsponse = await fetch (speciesUrls[0]);
-        if (!speciesRsponse.ok){
-            throw new Error(`Failed : ${speciesUrls[0]}`);
-        }
-        const speciesData = await speciesRsponse.json();
-        return speciesData.name;
-    }catch (error) {
+        const response = await fetch(url);
+        if(!response.ok) throw new Error(`Failed to fetch: ${url}`);
+        const data = await response.json();
+        return data.name || "Unknown";
+    }catch (error){
         console.error("Error fetching species:",error);
         return "Unknown"
     }
-    
 }
 
-// background Color based on Species
-const setSpecicesColor ={
-    "Unknown" : "#ffffff",
-    "Human": "#FF5733",
-    "Wookie":"#3357FF",
-    "Droid":"#33FF57",
-    "Twi'lek": "#2980B9"
+async function fetchFilm(filmUrls){
+    const filmstitle = await Promise.all(
+        filmUrls.map(async (url)=>{
+            const response = await fetch (url);
+            const data = await response.json();
+            return data.title;
+        })
+    );
+    return filmstitle;
+}
+
+const setSpeciesColor ={
+        "Human":"green",
+        "Droid":"purple",
+        "Wookiee":"red",
+        "Rodian":"pink",
+        "Hutt":"blue",
+        "Unknown":"white"
 };
+
 function getRandomColor(){
     return `#${Math.floor(Math.random()*16777215).toString(16)}`;
 }
-function speciesBackgroundColor(species){
-    if(!setSpecicesColor[species]){
-        setSpecicesColor[species] = getRandomColor();
+
+function getColorForSpecies(species){
+    if(!setSpeciesColor[species]){
+        setSpeciesColor[species]=getRandomColor();
     }
-    return setSpecicesColor[species];
-}
-
-//Render Character Cards
-async function renderCharacters (characterList, container) {
-    container.innerHTML ="";
-    for(const character of characterList) {
-        const characterDiv = document.createElement("div");
-        characterDiv.classList.add("character_card");
-
-        //Fetch addition details
-        /* const[speciesName, filmTitle] = await Promise.all([
-            fetchSpecies(character.species),
-            fetchFilmTitles(character.films),
-
-        ]); */
-
-        const speciesName = character.speciesName || "Unknown";
-        const filmTitle =character.films ? await fetchFilmTitles(character.films):["Unknown"];
-
-        //Save species directly in the object for filtering later
-       character.speciesName = speciesName;
-
-        // create elements for character card details
-    const characterName = document.createElement("h2");
-    characterName.textContent = character.name;
-
-    const characterSpecies = document.createElement("p");
-    characterSpecies.innerHTML =`<strong> Species : <strong> ${speciesName}`;
-
-    const characterBirthYear = document.createElement("p");
-    characterBirthYear.innerHTML =`<strong> Birth Year : <strong> ${character.birth_year}`;
-
-    const characterFilms = document.createElement("p");
-    if (filmTitle.length > 0){
-        characterFilms.innerHTML= `<strong> Films : <strong> ${filmTitle.join(",")}`;
-    } else{
-        characterFilms.style.display ="none"
-    }
-
-
-    // create edit button
-    const editButton = document.createElement("button");
-    editButton.innerHTML = `<i class="fa-solid fa-pen"></i>`;
-    editButton.classList.add("edit-btn");
-    editButton.addEventListener("click", () =>{
-        const newName = prompt("Enter new name: ", character.name);
-        const newBirthYear = prompt("Enter new birth year: ", character.birth_year);
-        const newSpecies = prompt("Enter new species: ", speciesName);
-        if (newName) characterName.innerHTML = newName;
-        if(newBirthYear) characterBirthYear.innerHTML = `<strong> Birth Year : <strong> ${newBirthYear}`;
-        if(newSpecies) characterSpecies.innerHTML = `<strong> Species : <strong> ${newSpecies}`;
-    });
-
-
-    //Create delete button
-
-    const deleteButton = document.createElement("button");
-    deleteButton.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-    deleteButton.classList.add("delete-btn");
-    deleteButton.addEventListener("click",() => {
-        characterDiv.remove();
-    });
-
-    // background Color
-    characterDiv.style.backgroundColor = speciesBackgroundColor(speciesName);
-
-
-    characterDiv.appendChild(characterName);
-    characterDiv.appendChild(characterSpecies);
-    characterDiv.appendChild(characterBirthYear);
-    characterDiv.appendChild(characterFilms);
-    container.appendChild(characterDiv);
-    characterDiv.appendChild(editButton);
-    characterDiv.appendChild(deleteButton);
-
-
-    }
-
+    return setSpeciesColor[species];
     
 }
+
+async function showCharacters(typesSpecies = null){
+    charactersList.innerHTML ="";
+    //
+    const apiCharacters = await fetchAllCharacters();
+    const characters=apiCharacters.concat(customCharacters);
+    //<const characters = await fetchCharacters();
+
+    for (const character of characters){
+        const speciesName = character.species.length > 0
+        ? await fetchSpecies(character.species)
+        :"Unknown";
+
+        if (typesSpecies && speciesName !== typesSpecies){
+            continue;
+        }
+
+        const titles = character.films.length > 0
+        ? await fetchFilm(character.films)
+        : [] ; 
+
+        const card = document.createElement("div");
+        card.classList.add("character-card");
+        card.style.backgroundColor = getColorForSpecies(speciesName);
+
+        const characterName = document.createElement("h2");
+        characterName.innerText =character.name;
+
+        const characterBirthYear = document.createElement("p");
+        characterBirthYear.innerText ="BirthYear:" + character.birth_year;
+
+        const characterSpecies = document.createElement("p");
+        characterSpecies.innerText ="Species:" + speciesName;
+
+        const characterFilms = document.createElement("p");
+        characterFilms.innerText = titles.length > 0
+            ? "Filmer:" + titles.join(",")
+            : "Filmer : Unknown";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML =`<i class="fa-solid fa-trash"></i>`;
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.addEventListener("click", function(){
+            card.remove();
+        });
+
+        const editBtn = document.createElement("button");
+        editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
+        editBtn.classList.add("edit-btn");
+
+        editBtn.addEventListener("click", function() {
+            const newName = prompt("Enter New Name:", character.name);
+            const newBirthYear = prompt ("Enter New Birth Year:", character.birth_year);
+            const newSpecies = prompt ("Enter New Species",speciesName);
+
+            if(newName)characterName .innerText=newName;
+            if(newBirthYear)characterBirthYear.innerText="BirthYear:" + newBirthYear;
+            if(newSpecies){
+                characterSpecies.innerText="Species:" + newSpecies;
+                card.style.backgroundColor=getColorForSpecies(newSpecies)
+            }
+        })
+        card.append(characterName, characterBirthYear, characterSpecies,characterFilms,deleteBtn,editBtn);
+        charactersList.appendChild(card);
+    }
+    console.log(" Character Cards : ", charactersList.children.length);
+}
+
+async function addSpeciesBtn(){
+    const characters = await fetchAllCharacters();
+    const speciesGroup = new Set();
+
+    for (const character of characters){
+        const speciesName = character.species.length > 0
+        ? await fetchSpecies (character.species)
+        :"Unknown";
+        speciesGroup.add(speciesName);
+    }
+
+    speciesGroup.forEach(species => {
+        const buttonBtn = document.createElement("button");
+        buttonBtn.innerText = species;
+        buttonBtn.addEventListener("click", function(){
+            showCharacters(species);
+        });
+
+        speciesType.appendChild(buttonBtn);
+
+        // dropdown
+        const option =document.createElement("option");
+        option.value =species;
+        option.innerText=species;
+        speciesSelect.appendChild(option);
+    });
+
+    const restartBtn = document.createElement("button");
+    restartBtn.innerText = "All";
+    restartBtn.addEventListener("click", function(){
+        showCharacters();
+    });
+    speciesType.appendChild(restartBtn);
+
+}
+addCharacterBtn.addEventListener("click", function(){
+    const name = nameEnter.value.trim();
+    const birthYear=birthyearEnter.value.trim();
+    const species =speciesSelect.value;
+
+    if (!name || !birthYear || !species){
+        alert("Pls Enter all information.");
+        return
+    }
+    const newCharacter={
+        name : name,
+        birth_year : birthYear,
+        species : [species],
+        films : [],
+        custom : true
+    };
+    customCharacters.push(newCharacter);
+    showCharacters();
+
+    nameEnter.value="",
+    birthyearEnter.value ="",
+    speciesSelect.value=0;
+});
+
+addSpeciesBtn();
+showCharacters();
+
+
+
+
+
+
+

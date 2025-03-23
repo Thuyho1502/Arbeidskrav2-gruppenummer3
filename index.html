@@ -6,25 +6,27 @@
     <title>Star Wars-universet character</title>
     <link rel="stylesheet" href="Css/style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+   
 </head>
 <body>
     <header>
         <h1>Star Wars Universet</h1>
     </header>
 
-<form id = "add_form">
-    <input type = "text" id ="name" placeholder="Hero Name" required>
-    <input type ="text" id="birth_year" placeholder="Year Of Birth" required>
-    <input type ="text" id ="species" placeholder=" Enter Species" required>
-    <button type ="submit">Add</button>
-</form>
-    <section>
-        <label for ="species_list">Type by Species</label>
-        <select id ="species_list">
-            <option value="all">All</option>
+    <div id = "species-type"></div>
+    <form id = "add-form">
+        <input type = "text" id ="name-enter" placeholder="Character Name" required>
+        <input type ="text" id="birthyear-enter" placeholder="Year Of Birth" required>
+        <select id ="species-select">
+            <option value="" disabled selected>Choose a species</option>
         </select>
-    </section>
-    <section id="all_character"></section>
+        
+        <button type="button" id="add-btn" value="Add">Add</button>
+    </form>
+
+    <div id="characters-list"></div>
     
     <script src="character.js"></script>
     

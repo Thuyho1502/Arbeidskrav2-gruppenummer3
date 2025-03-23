@@ -1,4 +1,127 @@
 body{
+    font-family: Arial, sans-serif;
+    background-color: #fffdfd;
+    text-align: center;
+}
+header{
+    background-color: black;
+    color: white;
+    padding: 5px;
+    font-size: 17px;
+}
+
+h1{
+    font-size: 25px;
+    margin-top: 15px;
+}
+
+#species-type{
+    margin:10px 0;
+}
+
+button{
+    padding:  10px 12px;
+    margin : 8px;
+    border:none;
+    cursor: pointer;
+    background-color: #2f84de;
+    color: white;
+    border-radius: 8px;
+}
+
+button:hover{
+    background-color: #0452a5;
+}
+
+#characters-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+}
+
+.character-card{
+    width: 200px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow:  0 5px 7px rgba(0,0,0,0.15);
+    text-align: left;
+}
+
+.character-card h2{
+    margin: 7px 0;
+    font-size: 20px;
+}
+
+.character-card p{
+    margin: 7px 0 ;
+    font-size: 15px;
+}
+
+.character-card button{
+    width: 40%;
+    margin-top: 15px;
+}
+
+.character_card{
+    width: 200px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: left;
+    background-color: beige;
+    border: 1px solid black;
+
+}
+.edit-btn{
+    background: white;
+    border: 2px solid royalblue;
+    color: royalblue;
+    font-size: 15px;
+    border-radius: 8px;
+    padding:  4px 6px;
+    transition: 0,2s;
+}
+.edit-btn:hover {
+    background-color: #005eff;
+    color: white;
+    font-size: 20px;
+}
+.delete-btn{
+    background: white;
+    border: 2px solid crimson;
+    color: crimson;
+    font-size: 15px;
+    border-radius: 8px;
+    padding:  4px 6px;
+    transition: 0,2s;
+}
+.delete-btn:hover{
+    background-color: #ff0015;
+    color: crimson;
+    color: white;
+    font-size: 20px;
+}
+
+
+
+#species-select{
+    padding : 10px;
+    margin-top: 10px;
+    font-size: 15px;
+    border-radius: 7px;
+    background-color: white;
+    color: black;
+    border: 1px seagreen;
+}
+
+#species-select option{
+    background-color: white;
+    color: black;
+    padding: 7px;
+}
+
+/* body{
     font-family: Arial, Helvetica, sans-serif;
     background-color: white;
     text-align: center;
@@ -88,3 +211,5 @@ h1{
 #add_form button:hover{
     background-color: #25db2e;
 }
+ */
+
