@@ -1,6 +1,6 @@
 body{
     font-family: Arial, sans-serif;
-    background-color: white;
+    background-color: #fffdfd;
     text-align: center;
 }
 
@@ -41,7 +41,6 @@ button:hover{
     border-radius: 5px;
     box-shadow:  0 5px 7px rgba(0,0,0,0.15);
     text-align: left;
-    border: 1px solid black;
 }
 
 .character-card h2{
@@ -59,19 +58,45 @@ button:hover{
     margin-top: 15px;
 }
 
-.character_card .delete-btn{
-    background-color: red;
+.character_card{
+    width: 200px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: left;
+    background-color: beige;
+    border: 1px solid black;
 
 }
-.character-card.delete-btn:hover{
-    background-color: #dad428;
+.edit-btn{
+    background: white;
+    border: 2px solid royalblue;
+    color: royalblue;
+    font-size: 15px;
+    border-radius: 8px;
+    padding:  4px 6px;
+    transition: 0,2s;
 }
-.character-card .edit-btn{
-    background-color: green;
+.edit-btn:hover {
+    background-color: #005eff;
+    color: white;
+    font-size: 20px;
 }
-.character-card .edit-btn:hover{
-    background-color: #097825;
+.delete-btn{
+    background: white;
+    border: 2px solid crimson;
+    color: crimson;
+    font-size: 15px;
+    border-radius: 8px;
+    padding:  4px 6px;
+    transition: 0,2s;
 }
+.delete-btn:hover{
+    background-color: #ff0015;
+    color: crimson;
+    color: white;
+    font-size: 20px;
+}
+
 
 
 #species-select{
@@ -89,4 +114,38 @@ button:hover{
     color: black;
     padding: 7px;
 }
+#add_form{
+    display: flex;
+    flex-wrap: wrap;
+    gap:8px;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;
+    max-width: 920px;
+}
 
+#add_form input,
+#add_form select,
+#add_form button{
+    padding: 15px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 2px solid #000000;
+}
+#add_form input,
+#add_form select{
+    flex:2;
+    min-width: 160px;
+}
+
+#add_form button{
+    background-color: #38cd3d;
+    color: #ffffff;
+    cursor: pointer;
+    flex: 2;
+    min-width: 160px;
+    text-align: center;    
+}
+#add_form button:hover{
+    background-color: #25db2e;
+}
