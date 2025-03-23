@@ -1,6 +1,5 @@
-//const apiUrl = "https://crudapi.co.uk/api/v1/characters/";
+const apiUrl = "https://crudapi.co.uk/api/v1/characters";
 const apiKey = "0fso-PX2mZB-vLPUftn1WMNK083OHqARZdLnmrGnoekWZKBChw";
-
 export async function deleteCharacter(id){
     try{
         const response = await axios.delete(
