@@ -6,6 +6,7 @@ const charactersList = document.getElementById("characters-list");
 const speciesSelect = document.getElementById("species");
 
 
+
 async function fetchAllCharacter(){
     
     let url="https://swapi.dev/api/people/";
