@@ -5,7 +5,7 @@ body{
 }
 
 h1{
-    font-size: 25px;
+    font-size: 35px;
     margin-top: 15px;
 }
 
@@ -150,4 +150,20 @@ button:hover{
 }
 #add_form button:hover{
     background-color: #25db2e;
+}
+nav {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 18px;
+}
+nav a:hover {
+    background-color: #555;
+    border-radius: 5px;
 }

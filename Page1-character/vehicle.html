@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Css/vehicle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <nav>
+        <a href="index.html">Characters</a>
+        <a href="vehicles.html">Vehicles</a>
+    </nav>
+</head>
+<body>
+    <header>
+        <h1>Vehicles Shop</h1>
+        <div>
+            <h2>Balance: <span id ="balance">500 000</span>credits</h2>
+        </div>
+        <main>
+            <section id="vehicle-section">
+                <h2>Vehicles Available</h2>
+                <div id="vehicle-list"></div>
+                <button id="prev-button">Previous</button>
+                <button id ="next-button">Next</button>
+            </section>
+            <section id =" owned-section">
+                <h2>Your Owned Vehicles</h2>
+                <div id ="owned-vehicles-list"></div>    
+            </section>
+        </main>
+    </header>
+    <script src="./vehicle.js"></script>
+</body>
+</html>
