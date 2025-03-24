@@ -13,21 +13,21 @@ async function  fetchAllVehicles() {
     let url ="https://swapi.dev/api/vehicles";
    
     try{
-         while(url){
-        const response = await fetch(url);
-        const data = await response.json();
-        allVehicles = allVehicles.concat(data.results);
-        url = data.next;      
-    }
+        while(url){
+            const response = await fetch(url);
+            const data = await response.json();
+            allVehicles = allVehicles.concat(data.results);
+            url = data.next;      
+        }
         console.log(`Successfully fetched a total of ${allVehicles.length} vehicles.`);
         ShowAvailableVehiclesCard();
         ShowOwnedVehiclesCard();
- 
    
     } catch(error){
         console.log("Can not load vehicles:", error);
     }    
 }
+
 function updateBalanceDisplay(){
     const balance = parseInt(localStorage.getItem("balance")) || 500000;
     document.getElementById("balance").innerText = balance;
@@ -147,20 +147,20 @@ function sellVehicle(vehicle){
  
     try{
         const currentBalance = parseInt(localStorage.getItem("balance")) || 500000;
-    const vehicleCost = parseInt(vehicle.cost_in_credits);
-    const sellPrice = Math.floor(vehicleCost* 0.8);
+        const vehicleCost = parseInt(vehicle.cost_in_credits);
+        const sellPrice = Math.floor(vehicleCost* 0.8);
  
-    ownedVehicles = ownedVehicles.filter(v =>v.name !== vehicle.name);
+        ownedVehicles = ownedVehicles.filter(v =>v.name !== vehicle.name);
  
-    const newBalance = currentBalance + sellPrice;
-    localStorage.setItem("balance", newBalance);
-    updateBalanceDisplay();
+        const newBalance = currentBalance + sellPrice;
+        localStorage.setItem("balance", newBalance);
+        updateBalanceDisplay();
  
-    localStorage.setItem("ownedVehicles",JSON.stringify(ownedVehicles));
+        localStorage.setItem("ownedVehicles",JSON.stringify(ownedVehicles));
      
-    ShowOwnedVehiclesCard();
-    ShowAvailableVehiclesCard();
-    console.log(`Sold ${vehicle.name} for ${sellPrice} credits. New balance: ${newBalance}`);
+        ShowOwnedVehiclesCard();
+        ShowAvailableVehiclesCard();
+        console.log(`Sold ${vehicle.name} for ${sellPrice} credits. New balance: ${newBalance}`);
     }
     catch(error)
     {
@@ -230,9 +230,36 @@ async function loadDataFromCrudAPI() {
  
 document.getElementById("next-button").addEventListener("click", nextPage);
 document.getElementById("prev-button").addEventListener("click",prevPage);
+
+function easterEgg(){
+    let agree = confirm("Do you want to join guessing game to get 10000 credits ?");
+
+    if(agree){
+        let secretNumber = Math.floor(Math.random()*100) +1;
+        console.log(secretNumber);
+        let guess = prompt("Guess a number between 1 and 100: ");
+
+        if(!guess !== null){
+            guess = parseInt(guess);
+        }
+
+        if(guess === secretNumber){
+            let balance = parseInt(localStorage.getItem("balance")) || 500000;
+            balance += 10000;
+            localStorage.setItem("balance", balance);
+            alert(`Congratulations! You guess the correct number :${secretNumber} and won 10 000 creadits !`);
+        }else{
+            alert(`Sorry! The secret number was ${secretNumber}.Try again next time!`);
+        }
+    }
+    else{
+        alert("You declined to play. See you next time!");
+    }
+}
  
 /* fetchAllVehicles();
 ShowOwnedVehiclesCard();
 updateBalanceDisplay(); */
+easterEgg();
 fetchAllVehicles();
 loadDataFromCrudAPI(); 
