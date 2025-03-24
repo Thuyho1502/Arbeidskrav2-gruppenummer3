@@ -1,5 +1,5 @@
-const apiUrl = "https://crudapi.co.uk/api/v1/characters";
-const apiKey = "0fso-PX2mZB-vLPUftn1WMNK083OHqARZdLnmrGnoekWZKBChw";
+const apiUrl = "https://crudapi.co.uk/api/v1/data";
+const apiKey = "bYysHhKJrZDReR_LRwaIQ3hzXMiHeA3GNcqL-CGKd5cJIAkMOg";
 
 export async function addCharacter(data){
     console.log(data);

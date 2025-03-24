@@ -1,6 +1,6 @@
-import { addCharacter } from "../request/Post.js";
-import{getCharacters} from "../request/GET.js";
-import { deleteCharacter } from "../request/Delete.js";
+import { addCharacter } from "./request/Post.js";
+import{getCharacters} from "./request/GET.js";
+import { deleteCharacter } from "./request/Delete.js";
 
 const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
@@ -97,6 +97,7 @@ async function showCharacters(typesSpecies = null){
        
 
         for (const character of characters){
+            
             const speciesName = (character.species&&Array.isArray(character.species)&&character.species.length > 0)
             ? await fetchSpecies(character.species)
             :character.speciesName?.[0] || "Unknown";
@@ -128,11 +129,10 @@ async function showCharacters(typesSpecies = null){
                 : "Filmer : Unknown";
 
 
-            const deleteBtn = document.createElement("button");
-            deleteBtn.innerHTML=`<i class="fa-solid fa-trash"></i>`;
-            deleteBtn.classList.add("delete-btn");
-            deleteBtn.addEventListener("click", function(){
-                
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML=`<i class="fa-solid fa-trash"></i>`;
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.addEventListener("click", function(){
             deleteCharacters(character._uuid);
                 //card.remove();
 
@@ -144,28 +144,87 @@ async function showCharacters(typesSpecies = null){
             editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
             editBtn.classList.add("edit-btn");
 
-            editBtn.addEventListener("click", function() {
-                const newName = prompt("Enter New Name:", character.name);
-                const newBirthYear = prompt ("Enter New Birth Year:", character.birth_year);
-                const newSpecies = prompt ("Enter New Species",speciesName);
+            editBtn.addEventListener("click", async function() {
+                const form = document.createElement("form");
+                form.classList.add("edit-form");
 
-                if(newName)characterName .innerText=newName;
-                if(newBirthYear)characterBirthYear.innerText="BirthYear:" + newBirthYear;
-                if(newSpecies){
-                    characterSpecies.innerText="Species:" + newSpecies;
-                    card.style.backgroundColor=getColorForSpecies(newSpecies)
-                }
+                const nameInput =document.createElement("input");
+                nameInput.type="text";
+                nameInput.value=character.name;
+
+                const speciesDropdown = document.createElement("select");
+                Array.from(speciesSelect.options).forEach((opt)=>{
+                    if(opt.value !== "" && opt.value !=="all"){
+                        const option = document.createElement("option");
+                        option.value=opt.value;
+                        option.text =opt.value;
+                        if(opt.value ===speciesName) option.selected=true;
+                        speciesDropdown.appendChild(option);
+                    }
+                });
+                const saveBtn =document.createElement("button");
+                saveBtn.textContent="Save";
+                saveBtn.type="submit";
+
+                form.appendChild(nameInput);
+                form.appendChild(speciesDropdown);
+                form.appendChild(saveBtn);
+
+                card.innerHTML="";
+                card.appendChild(form);
+
+                form.addEventListener("submit",async(e) =>{
+                    e.preventDefault();
+                    const newName=nameInput.value.trim();
+                    const newSpecies=speciesDropdown.value;
+
+                    if(!newName || !newSpecies){
+                        alert ("Invalid input");
+                        return;
+                    }
+                    character.name=newName;
+                    character.speciesName=[newSpecies];
+
+                    let storedCharacters=JSON.parse(localStorage.getItem("characters"))
+                    const index = storedCharacters.findIndex((c)=> c._uuid === character._uuid);
+
+                    if(index !== -1){
+                        storedCharacters[index].name =newName;
+                        storedCharacters[index].speciesName=[newSpecies];
+                    }else{
+                        storedCharacters.push({
+                            ...character,
+                            name:newName,
+                            speciesName:[newSpecies],
+                        });
+                    }
+                    localStorage.setItem("characters",JSON.stringify(storedCharacters));
+
+                    if(character._uuid){
+                        try{
+                            await updateCharacter(character._uuid,{
+                                name:newName,
+                                speciesName:[newSpecies],
+                            });
+                            console.log("Update in CRUD Api and LocaclStorage");
+                        }catch(error){
+                            console.error("Failed to update character", error);
+                        }
+                    }
+                    showCharacters();
+                });
+                    
             });
             card.append(characterName, characterBirthYear, characterSpecies,characterFilms,deleteBtn,editBtn);
             charactersList.appendChild(card);
         }
         console.log(" Character Cards : ", charactersList.children.length);
     }catch (error){
-    console.log("Can not loaded character",error)
+        console.log("Can not loaded character",error)
     }
-    
 }
-async function deleteCharacters(id) {
+    
+}async function deleteCharacters(id) {
     await deleteCharacter(id);
     let storedCharacters = JSON.parse(localStorage.getItem("characters")) || [];
 
@@ -228,12 +287,11 @@ export function createCharacter(){
             birth_year : inputYearOfBirth,
             speciesName : [inputspecies]
         };
+        
         console.log("New character:", newCharacterObject);
         characterList.push(newCharacterObject);
-       
         localStorage.setItem("characters",JSON.stringify(characterList));
         showCharacters();    
-
         addCharacter([newCharacterObject]);   
   
     }catch(error)
@@ -245,6 +303,10 @@ export function createCharacter(){
 
 addSpeciesBtn();
 showCharacters();
+
+
+
+
 
 
 
