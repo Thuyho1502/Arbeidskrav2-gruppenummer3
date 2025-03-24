@@ -135,10 +135,31 @@ async function showCharacters(typesSpecies = null){
             deleteBtn.classList.add("delete-btn");
             deleteBtn.addEventListener("click", function(){
             deleteCharacters(character._uuid);
+            //card.remove();
 
     
         });
 
+        // edit button for fetch character
+
+        /* const editBtn = document.createElement("button");
+        editBtn.innerText="Edit";
+        editBtn.classList.add("edit-btn");
+
+
+        editBtn.addEventListener("click",function(){
+            const newName = prompt("Enter New Name: ", character.name);
+            const newBirthYear = prompt("Enter New Birth Year: ", character.birth_year);
+            const newSpecies = prompt("Enter New Specie: ", speciesName);
+
+            if (newName)nameA1.innerText = newName;
+            if(newBirthYear)birthyearA1.innerText="BirthYear: " + newBirthYear;
+            if (newSpecies){
+                speciesA1.innerText ="Species: " + newSpecies;
+                card.style.backgroundColor = getColorForSpecies(newSpecies)
+            }
+
+        }); */
 
             const editBtn = document.createElement("button");
             editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
@@ -306,3 +327,4 @@ function createCharacter(){
 
 addSpeciesBtn();
 showCharacters();
+
