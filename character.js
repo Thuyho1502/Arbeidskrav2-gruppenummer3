@@ -143,6 +143,9 @@ async function showCharacters(typesSpecies = null){
             const editBtn = document.createElement("button");
             editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
             editBtn.classList.add("edit-btn");
+ 
+ 
+            
 
             editBtn.addEventListener("click", async function() {
                 const form = document.createElement("form");
@@ -185,7 +188,7 @@ async function showCharacters(typesSpecies = null){
                     character.name=newName;
                     character.speciesName=[newSpecies];
 
-                    let storedCharacters=JSON.parse(localStorage.getItem("characters"))
+                    let storedCharacters=JSON.parse(localStorage.getItem("characters")) || [];
                     const index = storedCharacters.findIndex((c)=> c._uuid === character._uuid);
 
                     if(index !== -1){
