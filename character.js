@@ -1,5 +1,6 @@
 import { addCharacter } from "./request/Post.js";
 import{getCharacters} from "./request/GET.js";
+import { updateCharacter } from "./request/PUT.js";
 import { deleteCharacter } from "./request/Delete.js";
 
 const speciesType = document.getElementById("species-type");
@@ -7,7 +8,7 @@ const charactersList = document.getElementById("characters-list");
 const speciesSelect = document.getElementById("species");
 
 
-export async function fetchAllCharacter(){
+async function fetchAllCharacter(){
     
     let url="https://swapi.dev/api/people/";
     let characters=[];
@@ -129,16 +130,36 @@ async function showCharacters(typesSpecies = null){
                 : "Filmer : Unknown";
 
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.innerHTML=`<i class="fa-solid fa-trash"></i>`;
-        deleteBtn.classList.add("delete-btn");
-        deleteBtn.addEventListener("click", function(){
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML=`<i class="fa-solid fa-trash"></i>`;
+            deleteBtn.classList.add("delete-btn");
+            deleteBtn.addEventListener("click", function(){
             deleteCharacters(character._uuid);
-                //card.remove();
+            //card.remove();
 
     
         });
 
+        // edit button for fetch character
+
+        /* const editBtn = document.createElement("button");
+        editBtn.innerText="Edit";
+        editBtn.classList.add("edit-btn");
+
+
+        editBtn.addEventListener("click",function(){
+            const newName = prompt("Enter New Name: ", character.name);
+            const newBirthYear = prompt("Enter New Birth Year: ", character.birth_year);
+            const newSpecies = prompt("Enter New Specie: ", speciesName);
+
+            if (newName)nameA1.innerText = newName;
+            if(newBirthYear)birthyearA1.innerText="BirthYear: " + newBirthYear;
+            if (newSpecies){
+                speciesA1.innerText ="Species: " + newSpecies;
+                card.style.backgroundColor = getColorForSpecies(newSpecies)
+            }
+
+        }); */
 
             const editBtn = document.createElement("button");
             editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
@@ -185,7 +206,7 @@ async function showCharacters(typesSpecies = null){
                     character.name=newName;
                     character.speciesName=[newSpecies];
 
-                    let storedCharacters=JSON.parse(localStorage.getItem("characters"))
+                    let storedCharacters=JSON.parse(localStorage.getItem("characters")) || [];
                     const index = storedCharacters.findIndex((c)=> c._uuid === character._uuid);
 
                     if(index !== -1){
@@ -224,7 +245,7 @@ async function showCharacters(typesSpecies = null){
     }
 }
     
-}async function deleteCharacters(id) {
+async function deleteCharacters(id) {
     await deleteCharacter(id);
     let storedCharacters = JSON.parse(localStorage.getItem("characters")) || [];
 
@@ -269,11 +290,11 @@ async function addSpeciesBtn(){
     speciesType.appendChild(restartBtn);
 
 }
+
 const addBtn = document.getElementById("add-btn");
 addBtn.addEventListener("click",createCharacter);
 const characterList = []; 
-export function createCharacter(){
-    
+function createCharacter(){
     try{
         const inputCharacterName = document.getElementById("name").value.trim();
         const inputYearOfBirth = document.getElementById("birth_year").value;
@@ -299,14 +320,8 @@ export function createCharacter(){
             console.log("Can not create new character:", error);
         }
         
-} 
+}
 
 addSpeciesBtn();
 showCharacters();
-
-
-
-
-
-
 
