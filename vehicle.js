@@ -1,7 +1,8 @@
-import { getBalance } from "./request/GET_B.js";
-import { getOwnedVehicles } from "./request/GET_V.js";
-import { addOwnedVehicle } from "./request/POST_V.js";
-import { addBalance } from "./request/POST_B.js";
+import { getBalance } from "./Requests_Vehiecle/GET_B.js";
+import { getOwnedVehicles } from "./Requests_Vehiecle/GET_V.js";
+import { addOwnedVehicle } from "./Requests_Vehiecle/POST_V.js";
+import { addBalance } from "./Requests_Vehiecle/POST_B.js";
+import { updateBalance } from "./Requests_Vehiecle/PUT_B.js";
 
 
 let currentPage =1 ;
@@ -90,14 +91,18 @@ async function purchaseVehicle(vehicle) {
         const newBalance = currentBalance - vehicleCost;
         localStorage.setItem("balance", newBalance);
         updateBalanceDisplay();
+        
+        const balanceId = localStorage.getItem("balanceId");
+        if(balanceId){
+            await updateBalance(balanceId,newBalance);
+        }
  
  
         ownedVehicles.push(vehicle);
         localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
            
         ShowOwnedVehiclesCard();
-        localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
-        ShowOwnedVehiclesCard();
+        
         await addOwnedVehicle(vehicle); // <-- POST API
 
         console.log(` Purchased ${vehicle.name} for ${vehicleCost} credits. New balance: ${newBalance}`);
@@ -143,7 +148,7 @@ function ShowOwnedVehiclesCard(){
     }
 }
  
-function sellVehicle(vehicle){
+async function sellVehicle(vehicle){
  
     try{
         const currentBalance = parseInt(localStorage.getItem("balance")) || 500000;
@@ -156,6 +161,12 @@ function sellVehicle(vehicle){
         localStorage.setItem("balance", newBalance);
         updateBalanceDisplay();
  
+        const balanceId =localStorage.getItem("balanceId");
+        if(balanceId){
+            await updateBalance(balanceId,newBalance)
+
+        }
+
         localStorage.setItem("ownedVehicles",JSON.stringify(ownedVehicles));
      
         ShowOwnedVehiclesCard();
