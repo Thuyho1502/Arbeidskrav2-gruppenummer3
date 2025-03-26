@@ -163,8 +163,6 @@ async function showCharacters(typesSpecies = null){
             editBtn.innerHTML=`<i class="fa-solid fa-pen"></i>`;
             editBtn.classList.add("edit-btn");
  
- 
-            
 
             editBtn.addEventListener("click", async function() {
                 const form = document.createElement("form");
@@ -221,6 +219,8 @@ async function showCharacters(typesSpecies = null){
                         });
                     }
                     localStorage.setItem("characters",JSON.stringify(storedCharacters));
+                    console.log("Updated LocalStorage: ", JSON.parse(localStorage.getItem("characters")));
+
 
                     if(character._uuid){
                         try{

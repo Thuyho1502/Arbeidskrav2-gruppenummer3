@@ -105,8 +105,9 @@ async function purchaseVehicle(vehicle) {
             }
 
             ownedVehicles.push(vehicle);
-            const updatedVehicles = await getOwnedVehicles();
             localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
+
+            const updatedVehicles = await getOwnedVehicles();
             ownedVehicles=updatedVehicles;
             ShowOwnedVehiclesCard();
     
@@ -260,7 +261,7 @@ async function loadDataFromCrudAPI() {
 document.getElementById("next-button").addEventListener("click", nextPage);
 document.getElementById("prev-button").addEventListener("click",prevPage);
 
-function easterEgg(){
+async function easterEgg(){
     let agree = confirm("Do you want to join guessing game to get 10000 credits ?");
 
     if(agree){
@@ -268,7 +269,7 @@ function easterEgg(){
         console.log(secretNumber);
         let guess = prompt("Guess a number between 1 and 100: ");
 
-        if(!guess !== null){
+        if(guess !== null){
             guess = parseInt(guess);
         }
 
@@ -276,7 +277,13 @@ function easterEgg(){
             let balance = parseInt(localStorage.getItem("balance")) || 500000;
             balance += 10000;
             localStorage.setItem("balance", balance);
+
+            const balanceId = localStorage.getItem("balanceId");
+            if (balanceId) {
+                 await updateBalance(balanceId, balance);
+            }
             alert(`Congratulations! You guess the correct number :${secretNumber} and won 10 000 creadits !`);
+            updateBalanceDisplay();
         }else{
             alert(`Sorry! The secret number was ${secretNumber}.Try again next time!`);
         }
@@ -287,8 +294,8 @@ function easterEgg(){
 }
  
 /* fetchAllVehicles();
-ShowOwnedVehiclesCard();
-updateBalanceDisplay(); */
+ShowOwnedVehiclesCard(); */
+//updateBalanceDisplay();
 easterEgg();
 fetchAllVehicles();
 loadDataFromCrudAPI(); 
