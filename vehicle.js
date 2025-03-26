@@ -3,7 +3,7 @@ import { getOwnedVehicles } from "./Requests_Vehiecle/GET_V.js";
 import { addOwnedVehicle } from "./Requests_Vehiecle/POST_V.js";
 import { addBalance } from "./Requests_Vehiecle/POST_B.js";
 import { updateBalance } from "./Requests_Vehiecle/PUT_B.js";
-
+import {deleteOwnedVehicle} from "./Requests_Vehiecle/DELETE_V.js";
 
 let currentPage =1 ;
 const vehiclesPerPage =6;
@@ -75,38 +75,46 @@ function ShowAvailableVehiclesCard(){
 }
 async function purchaseVehicle(vehicle) {
     try{
- 
-        const currentBalance = parseInt(localStorage.getItem("balance")) || 500000;
-        const vehicleCost = parseInt(vehicle.cost_in_credits);
- 
-        if(ownedVehicles.some(v =>v.name === vehicle.name)){
-            alert("You already own this vehicle !");
-            return;
-        }
- 
-        if (currentBalance < vehicleCost){
-            alert("Not enough creadits to buy this vehicles!");
-            return;
-        }
-        const newBalance = currentBalance - vehicleCost;
-        localStorage.setItem("balance", newBalance);
-        updateBalanceDisplay();
-        
-        const balanceId = localStorage.getItem("balanceId");
-        if(balanceId){
-            await updateBalance(balanceId,newBalance);
-        }
- 
- 
-        ownedVehicles.push(vehicle);
-        localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
-           
-        ShowOwnedVehiclesCard();
-        
-        await addOwnedVehicle(vehicle); // <-- POST API
 
-        console.log(` Purchased ${vehicle.name} for ${vehicleCost} credits. New balance: ${newBalance}`);
-    }catch{(error)
+            const currentBalance = parseInt(localStorage.getItem("balance")) || 500000;
+            const vehicleCost = parseInt(vehicle.cost_in_credits);
+
+            if (isNaN(vehicleCost)) {
+                alert("This vehicle has unknown price and cannot be purchased.");
+                return;
+            }
+
+            if(ownedVehicles.some(v =>v.name === vehicle.name)){
+                alert("You already own this vehicle !");
+                return;
+            }
+
+            if (currentBalance < vehicleCost){
+                alert("Not enough creadits to buy this vehicles!");
+                return;
+            }
+            const newBalance = currentBalance -vehicleCost;
+            localStorage.setItem("balance", newBalance);
+            updateBalanceDisplay();
+
+            await addOwnedVehicle(vehicle);
+
+            const balanceId = localStorage.getItem("balanceId");
+            if(balanceId){
+                await updateBalance(balanceId,newBalance);
+            }
+
+            ownedVehicles.push(vehicle);
+            const updatedVehicles = await getOwnedVehicles();
+            localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
+            ownedVehicles=updatedVehicles;
+            ShowOwnedVehiclesCard();
+    
+    
+            console.log(` Purchased ${vehicle.name} for ${vehicleCost} credits. New balance: ${newBalance}`);
+        }
+
+    catch{(error)
         console.log("Error purchasing vehicle:", error);
     }
    
@@ -139,6 +147,8 @@ function ShowOwnedVehiclesCard(){
  
             ownedCard.append(vehicleName,vehicleModel,vehicleCargoCapacity,vehicleCost,sellButton);
             ownedList.appendChild(ownedCard);
+
+            getOwnedVehicles();
  
         }
         console.log(`Successfully displayed ${ownedVehicles.length} owned vehicles.`);
@@ -154,10 +164,19 @@ async function sellVehicle(vehicle){
         const currentBalance = parseInt(localStorage.getItem("balance")) || 500000;
         const vehicleCost = parseInt(vehicle.cost_in_credits);
         const sellPrice = Math.floor(vehicleCost* 0.8);
+        const newBalance = currentBalance + sellPrice;
+
+        const matchingVehicle = ownedVehicles.find(v => v.name === vehicle.name);
+        if (matchingVehicle && matchingVehicle._uuid) {
+            await deleteOwnedVehicle(matchingVehicle._uuid);
+        }
+        else{
+            console.warn("can not reach _uuid to delete");
+        }
  
         ownedVehicles = ownedVehicles.filter(v =>v.name !== vehicle.name);
- 
-        const newBalance = currentBalance + sellPrice;
+        localStorage.setItem("ownedVehicles",JSON.stringify(ownedVehicles));
+       
         localStorage.setItem("balance", newBalance);
         updateBalanceDisplay();
  
@@ -167,10 +186,9 @@ async function sellVehicle(vehicle){
 
         }
 
-        localStorage.setItem("ownedVehicles",JSON.stringify(ownedVehicles));
-     
         ShowOwnedVehiclesCard();
         ShowAvailableVehiclesCard();
+
         console.log(`Sold ${vehicle.name} for ${sellPrice} credits. New balance: ${newBalance}`);
     }
     catch(error)

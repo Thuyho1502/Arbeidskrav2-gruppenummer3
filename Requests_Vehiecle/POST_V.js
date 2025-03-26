@@ -1,10 +1,19 @@
 const apiUrl = "https://crudapi.co.uk/api/v1/ownedVehicles";
+const apiKey = "zcCftxJWtOYhEsBu2bxVrYlaE5ak7lSeSYHGBBGHR-XxWhAO3Q";
 
 export async function addOwnedVehicle(vehicle) {
     try {
+        const cleanedVehicle = {
+            name: vehicle.name,
+            model: vehicle.model,
+            cargo_capacity: parseInt(vehicle.cargo_capacity) || 0,
+            cost_in_credits: parseInt(vehicle.cost_in_credits) || 0,
+        };
+ 
+        console.log(" Sending cleaned vehicle to API:", cleanedVehicle);
         const response = await axios.post(apiUrl, [vehicle], {
-            headers: {
-                Authorization: "Bearer B2xGE2ZKYzYahe7gievcflZ1YoVRwO6AW9dHDDjBve6SIcLnKQ", 
+            headers:{
+                Authorization:`Bearer ${apiKey}`,
             },
         });
 

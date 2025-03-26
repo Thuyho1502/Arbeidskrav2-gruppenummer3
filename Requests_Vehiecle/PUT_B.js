@@ -1,12 +1,12 @@
 const apiUrl = "https://crudapi.co.uk/api/v1/balance";
-
+const apiKey = "zcCftxJWtOYhEsBu2bxVrYlaE5ak7lSeSYHGBBGHR-XxWhAO3Q";
 export async function updateBalance(balanceId, newValue) {
   try {
         const response = await axios.put(`${apiUrl}/${balanceId}`,
             { value: newValue },
             {
-                headers: {
-                Authorization: "Bearer B2xGE2ZKYzYahe7gievcflZ1YoVRwO6AW9dHDDjBve6SIcLnKQ",
+                headers:{
+                    Authorization:`Bearer ${apiKey}`,
                 },
             }
         );

@@ -1,10 +1,11 @@
 const apiUrl = "https://crudapi.co.uk/api/v1/ownedVehicles";
+const apiKey = "zcCftxJWtOYhEsBu2bxVrYlaE5ak7lSeSYHGBBGHR-XxWhAO3Q";
 
 export async function getOwnedVehicles() {
   try {
         const response = await axios.get(apiUrl, {
-            headers: {
-                Authorization: "Bearer B2xGE2ZKYzYahe7gievcflZ1YoVRwO6AW9dHDDjBve6SIcLnKQ", // 👈 thay bằng API key của bạn
+            headers:{
+                Authorization:`Bearer ${apiKey}`,
             },
         });
         const vehicles = response.data.items;
