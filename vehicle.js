@@ -311,7 +311,7 @@ async function easterEgg() {
         }
  
         alert(` You guessed correctly! The secret number was ${secretNumber}. You won 10,000 credits!`);
-        console.log(`🎉 New balance after winning Easter Egg: ${balance} credits`);
+        console.log(`New balance after winning Easter Egg: ${balance} credits`);
     } else {
         alert(`Sorry! The correct number was ${secretNumber}. Try again later.`);
     }
@@ -328,8 +328,8 @@ loadDataFromCrudAPI().then(() => {
     if (showEasterEgg) {
         const eggButton = document.getElementById("easter-egg-button");
         eggButton.style.display = "block";
-        console.log("🎰 Lucky you! The secret game has appeared!");
-        alert("🎉 You're lucky! A secret game is available!");
+        console.log("Lucky you! The secret game has appeared!");
+        alert("You're lucky! A secret game is available!");
     }
 });
  
