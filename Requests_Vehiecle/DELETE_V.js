@@ -1,14 +1,13 @@
 const apiUrl = "https://crudapi.co.uk/api/v1/ownedVehicles";
-const apiKey = "zcCftxJWtOYhEsBu2bxVrYlaE5ak7lSeSYHGBBGHR-XxWhAO3Q";
 
 export async function deleteOwnedVehicle(uuid) {
   try {
     const response = await axios.delete(`${apiUrl}/${uuid}`, {
-        headers:{
-            Authorization:`Bearer ${apiKey}`,
-        },
+      headers: {
+        Authorization: "Bearer B2xGE2ZKYzYahe7gievcflZ1YoVRwO6AW9dHDDjBve6SIcLnKQ", 
+    },
     });
- 
+
     console.log(`DELETE success – Vehicle deleted`);
     return response.data;
   } catch (error) {

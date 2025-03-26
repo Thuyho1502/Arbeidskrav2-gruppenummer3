@@ -8,9 +8,10 @@ export async function getOwnedVehicles() {
                 Authorization:`Bearer ${apiKey}`,
             },
         });
-        const vehicles = response.data.items;
-        console.log(`GET owned vehicle success -${vehicles.length} vehicles found`);
-        return vehicles;
+        console.log("🔍 API raw response:", response.data);
+        return response.data.items;
+        /* console.log(`GET owned vehicle success -${vehicles.length} vehicles found`);
+        return vehicles; */
         
     } catch (error) {
         console.error("Error fetching owned vehicles:", error);
