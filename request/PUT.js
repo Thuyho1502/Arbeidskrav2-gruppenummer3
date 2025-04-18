@@ -1,11 +1,9 @@
-
-const apiUrl ="https://crudapi.co.uk/api/v1/data";
-const apiKey ="di7wgyaenklUyd4b2aE8LeG3BtLUTb8ibLitXdbRJ_odye_4SA";
+const apiUrl = " https://crudcrud.com/api/0802a76acea244049d4ef93ae005c38b/data2";
+ 
 export async function updateCharacter(uuid,updatetData){
     try{
         const response = await axios.put(`${apiUrl}/${uuid}`,updatetData,{
             headers:{
-                Authorization : `Bearer ${apiKey}`,
                 "Content-Type":"application/json"
             }
         });

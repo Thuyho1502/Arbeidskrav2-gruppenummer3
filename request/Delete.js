@@ -1,21 +1,15 @@
-const apiUrl = "https://crudapi.co.uk/api/v1/data";
-const apiKey = "di7wgyaenklUyd4b2aE8LeG3BtLUTb8ibLitXdbRJ_odye_4SA";
+const apiUrl = "https://crudcrud.com/api/0802a76acea244049d4ef93ae005c38b/data2";
+ 
 export async function deleteCharacter(id){
     try{
         const response = await axios.delete(
-            `https://crudapi.co.uk/api/v1/data/${id}`,
-            {
-            headers:{
-                Authorization:`Bearer ${apiKey}`,
-
-                },
-            }
+            `https://crudcrud.com/api/0802a76acea244049d4ef93ae005c38b/data2/${id}`
         );
     console.log("Character delete:", response.data);
     return response.data;
-
+ 
     }catch(error){
-    
+   
         console.log("Delete failed: ", error);
     }
 }

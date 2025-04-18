@@ -1,6 +1,5 @@
-const apiUrl = "https://crudapi.co.uk/api/v1/ownedVehicles";
-const apiKey = "zcCftxJWtOYhEsBu2bxVrYlaE5ak7lSeSYHGBBGHR-XxWhAO3Q";
-
+const apiUrl = "https://crudcrud.com/api/0802a76acea244049d4ef93ae005c38b/ownedVehicles";
+ 
 export async function addOwnedVehicle(vehicle) {
     try {
         const cleanedVehicle = {
@@ -11,15 +10,12 @@ export async function addOwnedVehicle(vehicle) {
         };
  
         console.log(" Sending cleaned vehicle to API:", cleanedVehicle);
-        const response = await axios.post(apiUrl, [vehicle], {
-            headers:{
-                Authorization:`Bearer ${apiKey}`,
-            },
-        });
-
+ 
+        const response = await axios.post(apiUrl, cleanedVehicle);
+ 
         console.log("POST success:", response.status, response.data);
         return response.data;
     } catch (error) {
-        console.error("POST failed:", error);
+        console.error("POST failed:", error.response || error);
     }
 }
