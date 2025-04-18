@@ -3,7 +3,7 @@ const apiUrl = "https://crudcrud.com/api/0802a76acea244049d4ef93ae005c38b/ownedV
 export async function getOwnedVehicles() {
   try {
         const response = await axios.get(apiUrl);
-        console.log("🔍 API raw response:", response.data);
+        console.log(" API raw response:", response.data);
         return response.data;
         /* console.log(`GET owned vehicle success -${vehicles.length} vehicles found`);
         return vehicles; */

@@ -9,6 +9,7 @@ const speciesType = document.getElementById("species-type");
 const charactersList = document.getElementById("characters-list");
 const speciesSelect = document.getElementById("species");
  
+
 async function cleanupDuplicateCharacters() {
     try {
         const characters = await getCharacters();
@@ -66,6 +67,7 @@ async function fetchAllCharacter(){
             console.error("Failed to fetch:", url, err);
             break;
         }
+
     }
     try {
         const crudData = await getCharacters();

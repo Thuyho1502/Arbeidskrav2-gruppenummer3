@@ -8,7 +8,6 @@ export async function addOwnedVehicle(vehicle) {
             cargo_capacity: parseInt(vehicle.cargo_capacity) || 0,
             cost_in_credits: parseInt(vehicle.cost_in_credits) || 0,
         };
- 
         console.log(" Sending cleaned vehicle to API:", cleanedVehicle);
  
         const response = await axios.post(apiUrl, cleanedVehicle);

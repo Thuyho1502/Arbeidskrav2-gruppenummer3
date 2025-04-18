@@ -6,7 +6,7 @@ import { updateBalance } from "./Requests_Vehiecle/PUT_B.js";
 import {deleteOwnedVehicle} from "./Requests_Vehiecle/DELETE_V.js";
  
 //Import the CRUD handling functions from separate files to keep the code
-//easy to understand and easier to manage when issues arise.
+
  
 let currentPage =1 ; // reach wich page that user is on
 const vehiclesPerPage =6;
@@ -22,7 +22,8 @@ try {
  
 //save  the bought behicles so they stay after reloading the page
 let allVehicles =[];
- 
+
+
 // fetch all vehicles from swapi and show its
  
 async function  fetchAllVehicles() {
@@ -205,7 +206,7 @@ async function sellVehicle(vehicle) {
         if (Array.isArray(updatedVehicles)) {
             ownedVehicles = updatedVehicles;
             localStorage.setItem("ownedVehicles", JSON.stringify(ownedVehicles));
-            ShowOwnedVehiclesCard(); // ✅ chỉ gọi 1 lần ở đây
+            ShowOwnedVehiclesCard(); 
         } else {
             console.warn("Kết quả getOwnedVehicles không phải là mảng sau khi xoá:", updatedVehicles);
         }
@@ -218,8 +219,7 @@ async function sellVehicle(vehicle) {
             await updateBalance(balanceId, newBalance);
         }
  
-        ShowAvailableVehiclesCard(); // cập nhật lại danh sách bên trái
- 
+        ShowAvailableVehiclesCard();
         console.log(`Sold ${vehicle.name} for ${sellPrice} credits. New balance: ${newBalance}`);
     } catch (error) {
         console.log("Error selling vehicle:", error);
@@ -268,13 +268,13 @@ async function loadDataFromCrudAPI() {
             await addBalance(); // create  balance with default value when it do not have balance
             balanceData = await getBalance(); // call to get new balance
         }
-       
+        
         if (balanceData) {
             localStorage.setItem("balance", balanceData.value);
             localStorage.setItem("balanceId", balanceData._id); // save id to use when update or delete
             console.log("Loaded balance from API:", balanceData.value);
         }
- 
+  
         const ownedFromAPI = await getOwnedVehicles();
         if (Array.isArray(ownedFromAPI) && ownedFromAPI.length > 0) {
             localStorage.setItem("ownedVehicles", JSON.stringify(ownedFromAPI));
@@ -291,20 +291,20 @@ async function loadDataFromCrudAPI() {
       console.error("Error loading data from CRUD API:", error);
     }
 }
- 
+  
  
 document.getElementById("next-button").addEventListener("click", nextPage);
 document.getElementById("prev-button").addEventListener("click",prevPage);
 document.getElementById("easter-egg-button").addEventListener("click", easterEgg);
- 
+
 async function easterEgg() {
     const agree = confirm("Do you want to join a secret guessing game to win 10,000 credits?");
- 
+
     if (!agree) {
         alert("You declined the game. Maybe next time!");
         return;
     }
- 
+
     const secretNumber = Math.floor(Math.random() * 100) + 1;
     console.log(" Secret number is:", secretNumber); // log out the number in console then we can see and test the function
     const guess = parseInt(prompt("Guess a number between 1 and 100:"));// get the prediction from the user
@@ -314,7 +314,7 @@ async function easterEgg() {
         balance += 10000;
         localStorage.setItem("balance", balance);
         updateBalanceDisplay();
- 
+
         const balanceId = localStorage.getItem("balanceId");
         if (balanceId) {
             try {
@@ -324,15 +324,16 @@ async function easterEgg() {
                 console.error(" Failed to update balance after Easter Egg win:", error);
             }
         }
- 
+
         alert(` You guessed correctly! The secret number was ${secretNumber}. You won 10,000 credits!`);
         console.log(` New balance after winning Easter Egg: ${balance} credits`);
     } else {
         alert(`Sorry! The correct number was ${secretNumber}. Try again later.`);
     }
     document.getElementById("easter-egg-button").style.display = "none";
- 
+
 }
+
  
  
 /* fetchAllVehicles();
@@ -342,7 +343,7 @@ ShowOwnedVehiclesCard(); */
 fetchAllVehicles();
 loadDataFromCrudAPI().then(() => {
     const showEasterEgg = Math.random() < 0.3;
- 
+
     if (showEasterEgg) {
         const eggButton = document.getElementById("easter-egg-button");
         eggButton.style.display = "block";
@@ -350,4 +351,3 @@ loadDataFromCrudAPI().then(() => {
         alert(" You're lucky! A secret game is available!");
     }
 });
- 
